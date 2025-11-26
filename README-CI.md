@@ -12,7 +12,7 @@
 
 **Docker file**
 - **Explanation:** It defines how the container image is built. It uses Apache version 2.4 which comes ready to run. The second line of code puts web content files into the Apache web directory. 
-- [Dockerfile](./Dockerfile)
+- [Dockerfile](./DockerFile)
 
 **DockerFile Contents:**
 ```
