@@ -1,6 +1,6 @@
 # Project 4
 
-# DockerFile & Building Images
+# Part 1 - DockerFile & Building Images
 **Website Content**
 - **Explanation:** This is a simple resume website where it has information about me, my skills, my education, porjects I've worked on, and my work experiences. 
 
@@ -41,10 +41,27 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 - Push to DockerHub: `docker push kiranrdm/about-me-site:latest`
 - [My DockerHub Repo](https://hub.docker.com/r/kiranrdm/about-me-site)
 
+# Part 2 – GitHub Actions and DockerHub
+### Configuring GitHub Repository Secrets
+
+1. Configuring GitHub Repository Secrets:
+    - **How to create a PAT for authentication (and recommended PAT scope for this project):**
+    DockerHub → Account Settings → Security → New Access Token
+    Set permission to **Read, Write, Delete**
 
 
-
-
+    - How to set repository Secrets for use by GitHub Actions
+    - Describe the Secrets set for this project
+1. CI with GitHub Actions
+    - Explanation of workflow trigger
+    - Explanation of workflow steps
+    - Explanation / highlight of values that need updated if used in a different repository changes in workflow
+        - changes in reposi
+        - Link to workflow file in your GitHub repository
+2. Testing & Validating
+    - How to test that your workflow did its tasking
+    - How to verify that the image in DockerHub works when a container is run using the image
+    - Link to your DockerHub repository
 
 
 
