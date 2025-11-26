@@ -78,7 +78,7 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
     - Ensure Secrets (`DOCKER_USERNAME`, `DOCKER_TOKEN`) exist in the new repo.  
     - The main branch name must match the trigger branch in the workflow.  
 
-- [**workflow file:**](./.github/workflows/ci-docker-build.yml)
+- [**Workflow file:**](.github/workflows/main.yml)
 
 ---
 **3. Testing & Validating**
