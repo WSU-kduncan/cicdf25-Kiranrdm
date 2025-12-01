@@ -1,4 +1,17 @@
 # Project 4
+## Continuous Integration Project Overview
+- What is the goal of this project
+  - The goal of this project is to implement CI/CD that automatically builds and pushed Docker container images triggered by certain actions/events. 
+
+- What tools are used in this project and what are their roles
+  - **Git/GitHub** – track code changes and host the repository
+  - **GitHub Actions** – CI/CD workflow automation; triggers builds and pushes Docker images
+  - **Docker/DockerHub** – platform for containerization and to build images from code and stores them in DockerHub
+  - **Dockerfile** – defines how the container image is built
+
+- [Diagram of project](./web-content/Screenshots/ci-cd-model.png)
+
+## **Citations/Resources Used at the bottom**  
 
 # Part 1 - DockerFile & Building Images
 **Website Content**
@@ -145,21 +158,11 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
   - [DockerHub Tag Link](https://hub.docker.com/repository/docker/kiranrdm/about-me-site/tags)
   - [Screenshot DockerHub Tag](./web-content/Screenshots/dockerhub-tag.png)
 
-
-## Part 4 - Project Description & Diagram
-
-
-
-
-
-
-
-
-
-
+# Part 4 -  Diagram -- is at the top of the page
 
 # Citations / Resources Used
-- For Part 1 I used my web-contents from Project 3  
+- For Part 1 I used my web-contents from Project 3 
+- To create the diagram I used `Draw.io` -- am not sure of the digram is accurate but I did the best I could. 
 
 - I used ChatGPT to help identify why GitHub was blocking my push due to a leaked DockerHub PAT in a previous commit. The AI guided me on how to remove the affected commits and fix the issue using git reset and a force push. All steps were reviewed and performed by me. I used `git log --oneline --decorate --graph -05` and `git reset --hard` and git `push --force` commands.  
  
