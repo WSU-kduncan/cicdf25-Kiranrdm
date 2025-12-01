@@ -99,8 +99,54 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 
 # Part 3 - Semantic Versioning
 
+**1. Generating tags** 
+- **How to see tags in a git repository**  
+  - `git tag` -> this'll list tags in the repo
+- **How to generate a tag in a git repository**
+  - `git tag-a v1.0.0 -m "new tag v1.0.0"`
+- **How to push a tag in a git repository to GitHub**
+  - `git push origin v10.0.0`
+
+**2. Semantic Versioning Container Images with GitHub Actions**
+- **Explanation of workflow trigger**
+  - workflow is traggers when a git tag like v*.*.* (ex. v1.0.0.0) is pushed. 
+
+- **Explanation of workflow steps**
+  - pulls repo files into workflow
+  - logs in to dockerhub using sercrets stored in GitHub
+  - extract version components seperates the major, minor, and full version 
+  - builds image using dockerfile and pushes multiple tags (ex. latest, v1, v1.0, v1.0.0)
+  
+- **Explanation / highlight of values that need updated if used in a different repository**
+  - DockerHub repo name will need to be updated in the tags section  
+  - make sure GitHub secrets exist (in out case: DOCKER_USERNAME, DOCKER_TOKEN)  
+
+  - **changes in workflow**  
+    - might have to adjust tags  
+
+  - **changes in repository**  
+    - make sure branch name matches workflow trigger  
+    - needs to have dockerhub secrets if not add it to github  
+
+- [**Semantic Workflow file:**](.github/workflows/semantic.yml)
+
+**3. Testing & Validating**  
+- **How to test that your workflow did its tasking**  
+  - create a test tag `git tag -a v1.0.0.0 -m "test release tag"`
+  - push it `git push origin v1.0.0.0`
+  - Go to your repo in GitHub -> Actions -> check workflow  
+
+- **How to verify that the image in DockerHub works when a container is run using the image**  
+  - `docker pull kiranrdm/about-me-site:1.0.0`
+  - `docker run -d -p 8080:80 kiranrdm/about-me-site:1.0.0`
+  - then open in browser `http://localhost:8080` to see your changes  
+
+- **Link to your DockerHub repository with evidence of the tag set**
+  - [DockerHub Tag Link](https://hub.docker.com/repository/docker/kiranrdm/about-me-site/tags)
+  - [Screenshot DockerHub Tag](./web-content/Screenshots/dockerhub-tag.png)
 
 
+## Part 4 - Project Description & Diagram
 
 
 
@@ -114,5 +160,34 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 
 # Citations / Resources Used
 - For Part 1 I used my web-contents from Project 3  
+
 - I used ChatGPT to help identify why GitHub was blocking my push due to a leaked DockerHub PAT in a previous commit. The AI guided me on how to remove the affected commits and fix the issue using git reset and a force push. All steps were reviewed and performed by me. I used `git log --oneline --decorate --graph -05` and `git reset --hard` and git `push --force` commands.  
-- 
+ 
+- For the sematic.yml, I wrote the base but I was very confused on how to write this section and I used chatGPT to help me reform mine. The first code is what I wrote and I asked ai to help me and I ended upn with the second one. Prompt i used: "Here's a version extraction code i code, but i am not sure if it correct. Can you help me clean this up and explain to me what's wrong with my code."  
+  ``` 
+  this is the code I had: 
+        - name: Exctract version components 
+        id: version
+        run:
+        TAG=$GITHUB_REF
+        VERSION=${Tag#v}
+        MAJOR=${Version%%.*}
+        MINOR=${Version%.*}
+
+        echo "tag=$VERSION"
+        echo "major=$MAJOR"
+        echo "minor=$MINOR" ```
+  
+  ```
+        this is refined code with ai assistance: 
+        - name: Extract version components
+        id: version
+        run: |
+          # GITHUB_REF looks like: refs/tags/v1.2.3
+          TAG="${GITHUB_REF#refs/tags/}"   # -> v1.2.3
+          VER="${TAG#v}"                   # -> 1.2.3 (strip leading 'v')
+          MAJOR="${VER%%.*}"               # -> 1
+          MAJORMINOR="${VER%.*}"           # -> 1.2
+          echo "tag=${VER}" >> $GITHUB_OUTPUT
+          echo "major=${MAJOR}" >> $GITHUB_OUTPUT
+          echo "majorminor=${MAJORMINOR}" >> $GITHUB_OUTPUT ```
