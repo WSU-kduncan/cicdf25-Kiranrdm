@@ -1,4 +1,4 @@
-# apache http sever image
+# apache http server image
 FROM httpd:2.4
 
 # copy all contents from web-content into container filesystem... 

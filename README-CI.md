@@ -97,15 +97,22 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 - **[My DockerHub Repo]**(https://hub.docker.com/r/kiranrdm/about-me-site)
 
 
+# Part 3 - Semantic Versioning
 
 
 
--- testing github actions 
+
+
+
+
+
+
 
 
 
 
 
 # Citations / Resources Used
-- For Part 1 I used my web-contents from Project 3
-- I used ChatGPT to help identify why GitHub was blocking my push due to a leaked DockerHub PAT in a previous commit. The AI guided me on how to remove the affected commits and fix the issue using git reset and a force push. All steps were reviewed and performed by me. I used `git log --oneline --decorate --graph -05` and `git reset --hard` and git `push --force` commands. 
+- For Part 1 I used my web-contents from Project 3  
+- I used ChatGPT to help identify why GitHub was blocking my push due to a leaked DockerHub PAT in a previous commit. The AI guided me on how to remove the affected commits and fix the issue using git reset and a force push. All steps were reviewed and performed by me. I used `git log --oneline --decorate --graph -05` and `git reset --hard` and git `push --force` commands.  
+- 
