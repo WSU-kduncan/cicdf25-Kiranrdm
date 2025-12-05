@@ -25,7 +25,7 @@
 
 **Docker file**
 - **Explanation:** It defines how the container image is built. It uses Apache version 2.4 which comes ready to run. The second line of code puts web content files into the Apache web directory. 
-- [Dockerfile](./DockerFile)
+- [Dockerfile](./Dockerfile)
 
 **DockerFile Contents:**
 ```
@@ -165,7 +165,9 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 - To create the diagram I used `Draw.io` -- am not sure of the digram is accurate but I did the best I could. 
 
 - I used ChatGPT to help identify why GitHub was blocking my push due to a leaked DockerHub PAT in a previous commit. The AI guided me on how to remove the affected commits and fix the issue using git reset and a force push. All steps were reviewed and performed by me. I used `git log --oneline --decorate --graph -05` and `git reset --hard` and git `push --force` commands.  
- 
+
+- I forgot to mention this but I used this to help me with the yml's: [GitHub - docker/metadata-action](https://github.com/docker/metadata-action?tab=readme-ov-file#semver) and [Docker - Manage Tag Lables](https://docs.docker.com/build/ci/github-actions/manage-tags-labels/)
+
 - For the sematic.yml, I wrote the base but I was very confused on how to write this section and I used chatGPT to help me reform mine. The first code is what I wrote and I asked ai to help me and I ended upn with the second one. Prompt i used: "Here's a version extraction code i code, but i am not sure if it correct. Can you help me clean this up and explain to me what's wrong with my code."  
   ``` 
   this is the code I had: 
