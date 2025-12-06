@@ -1,28 +1,75 @@
 # Project 5
 
+### Self Notes
+- New AWS account, so created new instances using cf temp from Project 3 
+- [CF Template](./BISWA-lb-cf.yml)
+- **New SSH to proxy:** ssh -i ~/.ssh/project5-key.pem ubuntu@52.45.85.133
+- Added Security group Inbound rules to allow from 8080
+
+
 # Part 1 - Script a Refresh
-1. EC2 Instance Details
-- AMI information
-- Instance type
-- Recommended volume size
-- Security Group configuration
-- Security Group configuration justification / explanation  
+1. **EC2 Instance Details**
+- **AMI information:** Ubuntu 22.04 (ami id: ami-0ecb62995f68bb549)
+- **Instance type:** t2.medium (2 CPU core & 4 GB RAM)
+- **Recommended volume size:** 30 GB
+- **Security Group configuration:**
+  - allow SSH from trusted ip address
+  - allow http port (80) and application port (8080) from anywhere (I had to do this so that I could run about-me-site from EC2 instance)
+- **Security Group configuration justification / explanation:**
+  - HTTP port open so website is accessible
+  - SSH is restricted to known IPs
+  - only the needed ports for web application is opened
+
+2. **Docker Setup on OS on the EC2 instance**
+- **How to install Docker for OS on the EC2 instance**
+  ```bash
+    sudo apt update
+    sudo apt install -y docker.io
+    sudo systemctl enable docker
+    sudo systemvtl start docker 
+    ```
+- **Additional dependencies based on OS on the EC2 instance**
+  - install Git "sudo apt install -y git" 
+- **How to confirm Docker is installed and that OS on the EC2 instance can successfully run containers**
+  - Confirm docker: `docker --version`
+  - Verify container run: `sudo docker run -d -p 8080:80 kiranrdm/about-me-site:latest`
+
+3. **Testing on EC2 Instance**
+- **How to pull container image from DockerHub repository**
+  - `sudo docker pull kiranrdm/about-me-site:latest`
+- **How to run container from image**
+  - `sudo docker run -d -p 8080:80 kiranrdm/about-me-site:latest`
+- **Note the differences between using the -it flag and the -d flags and which you would recommend once the testing phase is complete**
+  - `-it` iteractive terminal -- used for debugging 
+  - `-d` detached mode -- runs container in the background
+  - I prefer using `-d` because it runs in the background and also because I am not familiar with `it`
+- **How to verify that the container is successfully serving the web application**
+  - `docker ps` -- lists running containers
+  - check website in my case the url is http://52.45.85.133:8080
+
+4. **Scripting Container Application Refresh**
+- **Description of the bash script**
+  - stops and removes any running containers 
+  - pulls the latest tagged image from my DockerHub repo
+  - starts a new container on detached mode on port 8080
+  - uses `--restart ubless-stopped` to auto start on system reboot
+- **How to test / verify that the script successfully performs its taskings**
+  - first make sure the script is executable: chmod +x scriptname.sh
+  - in my instance this is what i did:
+    - `cd deployment`
+    - `sudo ./refresh-container.sh`
+    - `sudo docker ps` -- confirm that new container is running 
+- [Bash Script Link](./deployment/refresh-container.sh)
 
 
-2. Docker Setup on OS on the EC2 instance
-- How to install Docker for OS on the EC2 instance
-- Additional dependencies based on OS on the EC2 instance
-- How to confirm Docker is installed and that OS on the EC2 instance can successfully run containers  
 
 
-3. Testing on EC2 Instance
-- How to pull container image from DockerHub repository
-- How to run container from image
-- Note the differences between using the -it flag and the -d flags and which you would recommend once the testing phase is complete
-- How to verify that the container is successfully serving the web application  
 
 
-4. Scripting Container Application Refresh
-- Description of the bash script
-- How to test / verify that the script successfully performs its taskings
-- LINK to bash script in repository
+
+
+
+# Reference / Resource Used
+- I prmpoted ChatGPT to give me a better CSS for my web, something that's appealing but easy on the eye. 
+- When testing Docker image on my EX@ instance, I got this platform compatabilty error ```Error response from daemon: no matching manifest for linux/amd64 in the manifest list entries: no match for platform in manifest: not found``` which I wasnt sure how to fix and I gave ChatGPT this error message and it walked me through to do this on my local machine (MacOS) `docker buildx build --platform linux/amd64 -t kiranrdm/about-me-site:latest ./web-content` and then i pushde it to DockerHub and pulled the container in my EC2 instance and it worked. 
+- 
