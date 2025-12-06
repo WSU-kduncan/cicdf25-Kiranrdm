@@ -122,7 +122,7 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 
 **2. Semantic Versioning Container Images with GitHub Actions**
 - **Explanation of workflow trigger**
-  - workflow is traggers when a git tag like v*.*.* (ex. v1.0.0.0) is pushed. 
+  - workflow is traggers when a git tag like v*.*.* (ex. v1.0.0) is pushed. 
 
 - **Explanation of workflow steps**
   - pulls repo files into workflow
