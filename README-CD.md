@@ -61,6 +61,23 @@
     - `sudo docker ps` -- confirm that new container is running 
 - [Bash Script Link](./deployment/refresh-container.sh)
 
+---
+1. **Configuring a webhook Listener on EC2 Instance**
+- How to install adnanh's webhook to the EC2 instance
+- How to verify successful installation
+- Summary of the webhook definition file
+- How to verify definition file was loaded by webhook
+- How to verify webhook is receiving payloads that trigger it
+  - how to monitor logs from running webhook
+  - what to look for in docker process views
+- LINK to definition file in repository
+
+2. **Configure a webhook Service on EC2 Instance**
+- Summary of webhook service file contents
+- How to enable and start the webhook service
+- How to verify webhook service is capturing payloads and triggering bash script
+- LINK to service file in repository
+
 
 
 
