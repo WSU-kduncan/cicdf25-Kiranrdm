@@ -1,12 +1,13 @@
 # Project 5
 
-### Self Notes
+### Additional Notes
 - New AWS account, so created new instances using cf temp from Project 3 
 - [CF Template](./BISWA-lb-cf.yml)
 - **New SSH to proxy:** ssh -i ~/.ssh/project5-key.pem ubuntu@52.45.85.133
 - Added Security group Inbound rules to allow from 8080
+- **Disabled main.yml workflow from GitHub manually based on your feedback on P4**
 
-
+---
 # Part 1 - Script a Refresh
 1. **EC2 Instance Details**
 - **AMI information:** Ubuntu 22.04 (ami id: ami-0ecb62995f68bb549)
@@ -62,21 +63,43 @@
 - [Bash Script Link](./deployment/refresh-container.sh)
 
 ---
+# Part 2 - Listen
 1. **Configuring a webhook Listener on EC2 Instance**
-- How to install adnanh's webhook to the EC2 instance
-- How to verify successful installation
-- Summary of the webhook definition file
-- How to verify definition file was loaded by webhook
-- How to verify webhook is receiving payloads that trigger it
+- **How to install adnanh's webhook to the EC2 instance**
+  - sudo apt update --> sudo apt install webhook
+- **How to verify successful installation**
+  - webhook --versin (this outputs webhook version 2.8.0 on ec2)
+- **Summary of the webhook definition file**
+  - `execute-command` -- points to the bash script that refreshes the Docker container
+  - `command-working-directory` -- points to `deployment` directory
+  - `trigger-rule` -- ensures payloads are from a trusted source using a shared secret
+- **How to verify definition file was loaded by webhook**
+  - `sudo webhook -hooks /home/ubuntu/deployment/hooks.json -verbose -port 9000`
+- **How to verify webhook is receiving payloads that trigger it**
   - how to monitor logs from running webhook
+    - `sudo journalctl -u webhook.service -f` -- show live logs for webhook service 
   - what to look for in docker process views
-- LINK to definition file in repository
+    - run `sudo docker ps` and look for correct container name and image tag
+- [LINK to definition file in repository](./deployment/hooks.json)
 
 2. **Configure a webhook Service on EC2 Instance**
-- Summary of webhook service file contents
-- How to enable and start the webhook service
-- How to verify webhook service is capturing payloads and triggering bash script
-- LINK to service file in repository
+- **Summary of webhook service file contents**
+  - in my EC2 instance it is in `/usr/lib/systemd/system/webhook.service`
+  - removed `ConditionPathExists` line and added `After=network.target`
+  - `ExecStart` -- command that runs when service starts 
+    - loads hooks file, shows logs, and listens onport 9000
+  - `WorkingDirectory=/home/ubuntu/deployment` -- service runs in `deployment` folder
+  - `Restart=on-failure` -- webhook auto restarts if crashes
+- **How to enable and start the webhook service**
+  ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable webhook.service
+    sudo systemctl start webhook.service
+    sudo systemctl status webhook.service
+  ```
+- **How to verify webhook service is capturing payloads and triggering bash script**
+  - `sudo journalctl -u webhook.service -f` -- checks logs from webhook service
+- [LINK to service file in repository](./deployment/webhook.service)
 
 
 
@@ -87,6 +110,33 @@
 
 
 # Reference / Resource Used
+- [adnanh webhook](https://github.com/adnanh/webhook)
+
 - I prmpoted ChatGPT to give me a better CSS for my web, something that's appealing but easy on the eye. 
-- When testing Docker image on my EX@ instance, I got this platform compatabilty error ```Error response from daemon: no matching manifest for linux/amd64 in the manifest list entries: no match for platform in manifest: not found``` which I wasnt sure how to fix and I gave ChatGPT this error message and it walked me through to do this on my local machine (MacOS) `docker buildx build --platform linux/amd64 -t kiranrdm/about-me-site:latest ./web-content` and then i pushde it to DockerHub and pulled the container in my EC2 instance and it worked. 
-- 
+
+- When testing Docker image on my ec2 instance, I got this platform compatabilty error ```Error response from daemon: no matching manifest for linux/amd64 in the manifest list entries: no match for platform in manifest: not found``` which I wasnt sure how to fix and I gave ChatGPT this error message and it walked me through to do this on my local machine (MacOS) `docker buildx build --platform linux/amd64 -t kiranrdm/about-me-site:latest ./web-content` and then i pushd it to DockerHub and pulled the container in my EC2 instance and it worked. 
+
+- I used this `https://github.com/adnanh/webhook` and the lecture videos in Pilot to get and idea of how to write hooks. 
+
+- I didn't use this but it kind of just helped me understand it a little. This is how i got my webhook.service, by doing `sudo vim /usr/lib/systemd/system/webhook.service`. I wasnt sure about webhook service file so i prompted ChatGPT for an example of a webhook.service file and this is what it gave me:
+  ```bash 
+  [Unit]
+  Description=Webhook Service
+  After=network.target
+
+  [Service]
+  ExecStart=/usr/local/bin/webhook -hooks /path/to/hooks.json -verbose
+  Restart=on-failure
+  User=webhook
+  Group=webhook
+  WorkingDirectory=/path/to
+
+  [Install]
+  WantedBy=multi-user.target
+  ```
+  **Along with these explanations:**
+    - ExecStart → runs the webhook with your config
+    - Restart=on-failure → restarts if it crashes
+    - User and Group → limits permissions for security
+    - WantedBy=multi-user.target → standard systemd target for services
+

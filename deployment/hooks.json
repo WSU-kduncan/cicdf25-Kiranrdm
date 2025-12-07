@@ -1,0 +1,22 @@
+[
+    {
+        "id": "refresh-site", 
+        "execute-command": "/home/ubuntu/deployment/refresh-container.sh",
+        "command-working-directory": "/home/ubuntu/deployment",
+        "response-message": "Refreshing website",
+        
+        "trigger-rule":
+        {
+            "match": 
+            {
+                "type": "payload-hash-sha1",
+                "secret": "mySecret",
+                "parameter": 
+                {
+                    "source": "header",
+                    "name": "X-Hub-Signature"
+                }
+            }
+        }
+    }
+]
