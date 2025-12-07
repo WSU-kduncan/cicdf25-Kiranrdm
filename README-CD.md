@@ -101,11 +101,26 @@
   - `sudo journalctl -u webhook.service -f` -- checks logs from webhook service
 - [LINK to service file in repository](./deployment/webhook.service)
 
+---
+# Part 3 - Send a Payload
+1. **Configuring a Payload Sender**
+- **Justification for selecting GitHub or DockerHub as the payload sender**
+  - I choose DockerHub as it is directly tied to images and I thought it would be easier than using GitHub. Also in your lecture you mentioned that you prefered DockerHub so I figured I'd use it as well. 
+- **How to enable your selection to send payloads to the EC2 webhook listener**
+  - go to your repo in DockerHub 
+  - click on webhooks (in the nav bar)
+  - under New Webhook enter name and webhook URL 
+  - press the add/plus on the right -- save the webhook
+- **Explain what triggers will send a payload to the EC2 webhook listener**
+  - When i push a new image it will send a payload to the ec2 webhook listener. 
+- **How to verify a successful payload delivery**
+  - in DockerHub -> repo -> wehbhooks -> under your webhook: click on the 3 dots and click history to view history and you'll see the status. 
+- **How to validate that your webhook only triggers when requests are coming from appropriate sources (GitHub or DockerHub)**
+  - any request not coming from http://52.45.85.133:9000/hooks/refresh-site will not trigger the script  
 
-
-
-
-
+my DockerHub webhook:
+webhook name: refresh-site-webhook
+webhook URL: http://52.45.85.133:9000/hooks/refresh-site
 
 
 
