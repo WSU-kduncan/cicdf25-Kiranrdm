@@ -122,9 +122,48 @@ my DockerHub webhook:
 webhook name: refresh-site-webhook
 webhook URL: http://52.45.85.133:9000/hooks/refresh-site
 
+---
+# Part 4 - Project Description & Diagram 
+1. **Continuous Deployment Project Overview**
+- **What is the goal of this project**
+  - The goal is to deploy a web application on an EC2 instance using Docker and automate its refresh whenever a new Docker image is pushed. This ensures the application always runs the latest version without manual intervention.
+
+- **What tools are used in this project and what are their roles**
+  - **VS Code** - work on my Github repos and to build and push images to DockerHub
+  - **AWS EC2** - hosts web application container
+  - **GitHub** - where my Porject repo is 
+  - **BashScript** - to write `refresh-container.sh` it stops old containers, pulls latest image and starts new container
+  - **Docker** - what runs the application as containers 
+  - **DockerHub** - stores docker images 
+  - **Webhook** - listesn for incoming payloads and triggers refresh-container.sh
+
+- **Diagram of project**
 
 
-# Reference / Resource Used
+- **What is NOT WORKING in this project**
+  - This was working when i did it first but am not sure why it's not working anymore. I'll fix it if get the time to get to it but I figured i'd document it before i forget: The webhook service on the EC2 instance is failing to start.
+  ```
+    ubuntu@proxy:~$ sudo systemctl status webhook.service  
+
+  × webhook.service - Small server for creating HTTP endpoints (hooks)
+      Loaded: loaded (/usr/lib/systemd/system/webhook.service; enabled>
+     ** Active: failed **(Result: exit-code) since Sun 2025-12-07 08:29:10>
+    Duration: 7ms
+        Docs: https://github.com/adnanh/webhook/
+      Process: 2395 ExecStart=/usr/bin/webhook -hooks /home/ubuntu/depl>
+    Main PID: 2395 (code=exited, status=1/FAILURE)
+          CPU: 5ms
+
+  Dec 07 08:29:10 proxy systemd[1]: webhook.service: Scheduled restart >
+  Dec 07 08:29:10 proxy systemd[1]: webhook.service: Start request repe>
+  Dec 07 08:29:10 proxy systemd[1]: webhook.service: Failed with result>
+  Dec 07 08:29:10 proxy systemd[1]: Failed to start webhook.service - S>
+  lines 1-13/13 (END)
+  ```
+
+
+
+## Reference / Resource Used
 - [adnanh webhook](https://github.com/adnanh/webhook)
 
 - I prmpoted ChatGPT to give me a better CSS for my web, something that's appealing but easy on the eye. 
