@@ -174,14 +174,15 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
         - name: Exctract version components 
         id: version
         run:
-        TAG=$GITHUB_REF
-        VERSION=${Tag#v}
-        MAJOR=${Version%%.*}
-        MINOR=${Version%.*}
+        TAG=$GITHUB_REF   --> save git reference in TAG
+        VERSION=${Tag#v}    --> removes v (v1.2.3 to 1.2.3)
+        MAJOR=${Version%%.*}    --> 1.2.3 to 1
+        MINOR=${Version%.*}   --> 1.2.3 to 1.2
 
-        echo "tag=$VERSION"
-        echo "major=$MAJOR"
-        echo "minor=$MINOR" ```
+        echo "tag=$VERSION"   --> echoes full version (1.0.0)
+        echo "major=$MAJOR"   --> echoes major number only (2.0.0)
+        echo "minor=$MINOR"   --> echois minor + major number (1.1.0)
+  ``` 
   
   ```
         this is refined code with ai assistance: 
@@ -196,3 +197,28 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
           echo "tag=${VER}" >> $GITHUB_OUTPUT
           echo "major=${MAJOR}" >> $GITHUB_OUTPUT
           echo "majorminor=${MAJORMINOR}" >> $GITHUB_OUTPUT ```
+
+- **UPDATED CITATION**
+  - This was the feedback I recieved: "Email me the sources for your workflow and / or update them in your citations section. ALL SOURCES MUST BE CITED - even if I recommended them." 
+  ```
+        - name: Extract version components
+        id: version
+        run: |
+          # GITHUB_REF looks like: refs/tags/v1.2.3
+          TAG="${GITHUB_REF#refs/tags/}"   # -> v1.2.3
+          VER="${TAG#v}"                   # -> 1.2.3 (strip leading 'v')
+          MAJOR="${VER%%.*}"               # -> 1
+          MAJORMINOR="${VER%.*}"           # -> 1.2
+          echo "tag=${VER}" >> $GITHUB_OUTPUT
+          echo "major=${MAJOR}" >> $GITHUB_OUTPUT
+          echo "majorminor=${MAJORMINOR}" >> $GITHUB_OUTPUT
+  ```
+  
+  I used ChatGPT to help refine my sematic versioning. (I added notes to my intial code couple lines above to give an idea of what iwas thinking)
+    - Prompt: this is my attempt at semantic version extraction code, could you look through it and explain to me if something is wrong.
+    - Outcome --> is what i have in my [semantic file](.github/workflows/semantic.yml)
+
+  - Sources I used to learn a little about semantic versioning
+    - [Semantic Versioning](https://semver.org/)
+    - [Youtube: Semantic Versioning](https://www.youtube.com/watch?v=uliEs1r8tnw)
+    - [GitHub docker/mertadataaction](https://github.com/docker/metadata-action?tab=readme-ov-file#semver)
