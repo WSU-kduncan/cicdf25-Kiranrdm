@@ -9,7 +9,7 @@
   - **Docker/DockerHub** – platform for containerization and to build images from code and stores them in DockerHub
   - **Dockerfile** – defines how the container image is built
 
-- [Diagram of project](./web-content/Screenshots/ci-cd-model.png)
+- ![Diagram of project](./web-content/Screenshots/ci-cd-model.png)
 
 ## **Citations/Resources Used at the bottom**  
 
@@ -20,8 +20,8 @@
 - [index.html](./web-content/index.html)
 - [experince.html](./web-content/experience.html)
 - [style.css](./web-content/style.css)
-- [Web Screenshot index page](./web-content/Screenshots/home_page.png)
-- [Web Screenshot experience page](./web-content/Screenshots/eperience_page.png)
+- ![Web Screenshot index page](./web-content/Screenshots/home_page.png)
+- ![Web Screenshot experience page](./web-content/Screenshots/eperience_page.png)
 
 **Docker file**
 - **Explanation:** It defines how the container image is built. It uses Apache version 2.4 which comes ready to run. The second line of code puts web content files into the Apache web directory. 
@@ -156,7 +156,7 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 
 - **Link to your DockerHub repository with evidence of the tag set**
   - [DockerHub Tag Link](https://hub.docker.com/repository/docker/kiranrdm/about-me-site/tags)
-  - [Screenshot DockerHub Tag](./web-content/Screenshots/dockerhub-tag.png)
+  - ![Screenshot DockerHub Tag](./web-content/Screenshots/dockerhub-tag.png)
 
 # Part 4 -  Diagram -- is at the top of the page
 
