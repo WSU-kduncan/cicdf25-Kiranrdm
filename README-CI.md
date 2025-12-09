@@ -32,10 +32,11 @@
 FROM httpd:2.4
 COPY ./web-content/ /usr/local/apache2/htdocs/
 ```
+NOW UPDATED to: `COPY ./ /usr/local/apache2/htdocs/`
 
-**How to build image from the repo DockerFile**
+**How to build image from the repo Dockerfile**
 - `docker build -t kiranrdm/about-me-site:latest ./web-content`
-- `latest` --> refers to the most recent build
+- `kiranrdm` --> refers to DockerHub
 
 **How to run the container**
 - `docker run -d -p 8080:80 kiranrdm/about-me-site:latest`
@@ -168,57 +169,50 @@ COPY ./web-content/ /usr/local/apache2/htdocs/
 
 - I forgot to mention this but I used this to help me with the yml's: [GitHub - docker/metadata-action](https://github.com/docker/metadata-action?tab=readme-ov-file#semver) and [Docker - Manage Tag Lables](https://docs.docker.com/build/ci/github-actions/manage-tags-labels/)
 
-- For the sematic.yml, I wrote the base but I was very confused on how to write this section and I used chatGPT to help me reform mine. The first code is what I wrote and I asked ai to help me and I ended upn with the second one. Prompt i used: "Here's a version extraction code i code, but i am not sure if it correct. Can you help me clean this up and explain to me what's wrong with my code."  
-  ``` 
-  this is the code I had: 
-        - name: Exctract version components 
-        id: version
-        run:
-        TAG=$GITHUB_REF   --> save git reference in TAG
-        VERSION=${Tag#v}    --> removes v (v1.2.3 to 1.2.3)
-        MAJOR=${Version%%.*}    --> 1.2.3 to 1
-        MINOR=${Version%.*}   --> 1.2.3 to 1.2
 
-        echo "tag=$VERSION"   --> echoes full version (1.0.0)
-        echo "major=$MAJOR"   --> echoes major number only (2.0.0)
-        echo "minor=$MINOR"   --> echois minor + major number (1.1.0)
-  ``` 
-  
-  ```
-        this is refined code with ai assistance: 
-        - name: Extract version components
-        id: version
-        run: |
-          # GITHUB_REF looks like: refs/tags/v1.2.3
-          TAG="${GITHUB_REF#refs/tags/}"   # -> v1.2.3
-          VER="${TAG#v}"                   # -> 1.2.3 (strip leading 'v')
-          MAJOR="${VER%%.*}"               # -> 1
-          MAJORMINOR="${VER%.*}"           # -> 1.2
-          echo "tag=${VER}" >> $GITHUB_OUTPUT
-          echo "major=${MAJOR}" >> $GITHUB_OUTPUT
-          echo "majorminor=${MAJORMINOR}" >> $GITHUB_OUTPUT ```
+**UPDATED CITATION for semantic.yml**  
+For the semantic.yml, I wasn't sure on how to write it. I spent some time quickly reviewing lecture videos and a video video which helped me to understand Semantic Versioning but not how to code it. For the most part I followed the strcuture of the workflow: main.yml just to have a base and tried my best to come up with something.  
+The instruction mentioned that there would have to be 3 tags (latest, major, and major.minor) so I knew I had to somehow seperate a tag into those categories. I wasn't sure how I'd do that so i serached up how to extract version components and I saw those weird symbols referede to as shell string manipulations and I looked into this site: https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html and it was still fuzzy but i tried to write something out.  
+I also prompted ChatGPT "how would i extract verision component for semantic versioning" and it gave me something like this:  
+1. start with git tag -- v1.2.3
+2. remove prefix -- 1.2.3
+3. seperate the parts: major, minor, patch  
 
-- **UPDATED CITATION**
-  - This was the feedback I recieved: "Email me the sources for your workflow and / or update them in your citations section. ALL SOURCES MUST BE CITED - even if I recommended them." 
-  ```
-        - name: Extract version components
-        id: version
-        run: |
-          # GITHUB_REF looks like: refs/tags/v1.2.3
-          TAG="${GITHUB_REF#refs/tags/}"   # -> v1.2.3
-          VER="${TAG#v}"                   # -> 1.2.3 (strip leading 'v')
-          MAJOR="${VER%%.*}"               # -> 1
-          MAJORMINOR="${VER%.*}"           # -> 1.2
-          echo "tag=${VER}" >> $GITHUB_OUTPUT
-          echo "major=${MAJOR}" >> $GITHUB_OUTPUT
-          echo "majorminor=${MAJORMINOR}" >> $GITHUB_OUTPUT
-  ```
-  
-  I used ChatGPT to help refine my sematic versioning. (I added notes to my intial code couple lines above to give an idea of what iwas thinking)
-    - Prompt: this is my attempt at semantic version extraction code, could you look through it and explain to me if something is wrong.
-    - Outcome --> is what i have in my [semantic file](.github/workflows/semantic.yml)
+With that in mind even though I wasn't sure how to do it I started with something like this if i remember correctly 
+```
+  - name: Extract version components
+  id: version
+  run:
+    TAG=$GITHUB_REF   --> save git reference in TAG
+    VERSION=${Tag#v}    --> removes v (v1.2.3 to 1.2.3)
+    MAJOR=${Version%%.*}    --> 1.2.3 to 1
+    MINOR=${Version%.*}   --> 1.2.3 to 1.2
+    
+    echo "tag=$VERSION"   --> echoes full version (1.0.0)
+    echo "major=$MAJOR"   --> echoes major number only (2.0.0)
+    echo "minor=$MINOR"   --> echois minor + major number (1.1.0)
+```
+I wasnt sure if this was right so i put my initial code into ChatGPT and prmpted -- this is my attempt at semantic version extraction code, could you look through it and explain to me if something is wrong.  
 
-  - Sources I used to learn a little about semantic versioning
-    - [Semantic Versioning](https://semver.org/)
-    - [Youtube: Semantic Versioning](https://www.youtube.com/watch?v=uliEs1r8tnw)
-    - [GitHub docker/mertadataaction](https://github.com/docker/metadata-action?tab=readme-ov-file#semver)
+- Outcome --> is what i have in my [semantic file](.github/workflows/semantic.yml)
+
+```
+      this is refined code with ai assistance: 
+      - name: Extract version components
+      id: version
+      run: |
+        # GITHUB_REF looks like: refs/tags/v1.2.3
+        TAG="${GITHUB_REF#refs/tags/}"   # -> v1.2.3
+        VER="${TAG#v}"                   # -> 1.2.3 (strip leading 'v')
+        MAJOR="${VER%%.*}"               # -> 1
+        MAJORMINOR="${VER%.*}"           # -> 1.2
+        echo "tag=${VER}" >> $GITHUB_OUTPUT
+        echo "major=${MAJOR}" >> $GITHUB_OUTPUT
+        echo "majorminor=${MAJORMINOR}" >> $GITHUB_OUTPUT 
+```
+
+- Sources I used to learn about semantic versioning
+  - [Semantic Versioning](https://semver.org/)
+  - [Youtube: Semantic Versioning](https://www.youtube.com/watch?v=uliEs1r8tnw)
+  - [GitHub docker/mertadataaction](https://github.com/docker/metadata-action?tab=readme-ov-file#semver)
+  - [GNU Shell String Manipulation](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html)
