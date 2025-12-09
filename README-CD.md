@@ -137,8 +137,8 @@ webhook URL: http://52.45.85.133:9000/hooks/refresh-site
   - **DockerHub** - stores docker images 
   - **Webhook** - listesn for incoming payloads and triggers refresh-container.sh
 
-- **Diagram of project**
-
+- **Diagram of project**  
+![Continuous Deployment Diagram](web-content/Screenshots/CD.png)
 
 - **What is NOT WORKING in this project**
   - This was working when i did it first but am not sure why it's not working anymore. I'll fix it if get the time to get to it but I figured i'd document it before i forget: The webhook service on the EC2 instance is failing to start.
