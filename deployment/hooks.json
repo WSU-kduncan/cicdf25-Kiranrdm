@@ -9,12 +9,12 @@
         {
             "match": 
             {
-                "type": "payload-hash-sha1",
-                "secret": "mySecret",
+                "type": "value",
+                "value": "kiranrdm/about-me-site",
                 "parameter": 
                 {
-                    "source": "header",
-                    "name": "X-Hub-Signature"
+                    "source": "payload",
+                    "name": "repository.repo_name"
                 }
             }
         }
