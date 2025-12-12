@@ -140,27 +140,8 @@ webhook URL: http://52.45.85.133:9000/hooks/refresh-site
 - **Diagram of project**  
 ![Continuous Deployment Diagram](web-content/Screenshots/CD.png)
 
-- **What is NOT WORKING in this project**
-  - This was working when i did it first but am not sure why it's not working anymore. I'll fix it if get the time to get to it but I figured i'd document it before i forget: The webhook service on the EC2 instance is failing to start.
-  ```
-    ubuntu@proxy:~$ sudo systemctl status webhook.service  
-
-  × webhook.service - Small server for creating HTTP endpoints (hooks)
-      Loaded: loaded (/usr/lib/systemd/system/webhook.service; enabled>
-     ** Active: failed **(Result: exit-code) since Sun 2025-12-07 08:29:10>
-    Duration: 7ms
-        Docs: https://github.com/adnanh/webhook/
-      Process: 2395 ExecStart=/usr/bin/webhook -hooks /home/ubuntu/depl>
-    Main PID: 2395 (code=exited, status=1/FAILURE)
-          CPU: 5ms
-
-  Dec 07 08:29:10 proxy systemd[1]: webhook.service: Scheduled restart >
-  Dec 07 08:29:10 proxy systemd[1]: webhook.service: Start request repe>
-  Dec 07 08:29:10 proxy systemd[1]: webhook.service: Failed with result>
-  Dec 07 08:29:10 proxy systemd[1]: Failed to start webhook.service - S>
-  lines 1-13/13 (END)
-  ```
-
+## What is NOT WORKING in this project
+  - This is the issue we ran into durning our demo: I was able to run the web from my local host but when I made the changes and pulled it in my ec2 instance there were some issues that I can't really put words to. The web page was no longer showing -- mostly like issue with container not being built properly but my refresh-container.sh is working properly. I cloned my GitHub repo in EC2 instance and manually ran the web and the web ran fine. 
 
 
 ## Reference / Resource Used
@@ -172,7 +153,8 @@ webhook URL: http://52.45.85.133:9000/hooks/refresh-site
 
 - I used this `https://github.com/adnanh/webhook` and the lecture videos in Pilot to get and idea of how to write hooks. 
 
-- I didn't use this but it kind of just helped me understand it a little. This is how i got my webhook.service, by doing `sudo vim /usr/lib/systemd/system/webhook.service`. I wasnt sure about webhook service file so i prompted ChatGPT for an example of a webhook.service file and this is what it gave me:
+- I didn't use this but it kind of just helped me understand it a little. This is how i got my webhook.service, by doing `sudo vim /usr/lib/systemd/system/webhook.service`. I wasnt sure about webhook service file so i prompted ChatGPT for an example of a webhook.service since I couldnt find one in [adnanh webhook](https://github.com/adnanh/webhook).  
+  This is what it gave me:
   ```bash 
   [Unit]
   Description=Webhook Service
@@ -194,3 +176,17 @@ webhook URL: http://52.45.85.133:9000/hooks/refresh-site
     - User and Group → limits permissions for security
     - WantedBy=multi-user.target → standard systemd target for services
 
+- While preping for the Live-Demo thinsgs were working fine and am not sure what I did but eveything kind of broke. I refered to ai and asked it some debugging type of questions. My suspicion was either my `hooks.json` or r`efresh-container.sh` so I pasted my code into there. I had also mentioned that I was using Dockerhub and was so posed to validate DockerHub repo and it poointed out that I was using secrets from GitGub and not DockerHub. SO i fixed it to use 
+
+- During the final preparation phase for the live demonstration, the automated Continuous Deployment (CD) pipeline unexpectedly broke. Although the Continuous Integration (CI) steps (building the image and pushing to DockerHub) were successful, the server deployment was not triggering.  
+  I suspected that iut was something to do with the hooks or the refresh-container and I reviewed it in my VS code and didn't see anything that stuck out tp me as they were working properly. 
+  I put my code into Gemini and it pointed this out:
+    1. my hooks was using X-Hub-Signature to validate incoming request which is used for GitHub and not DockerHub(this is what I've choosen to use for webhook) -- I had originally scrapped that code from [adnanh webhook](https://github.com/adnanh/webhook)
+   - I fixed the code to validate using my DockerHub repo name  
+
+
+I fixed them and tried them again but I had forgotten that hooks.json if originally from my EC2 instance and so I had to go in there adn update that as well which i mispelled somethings there and it took a lot of time for me to realize that and fix it.  
+
+**Another thing I Did**: This wasn't ai but one of my friend, advised that maybe I could delete all the images and containers since I have pushed it DockerHub I can just pull it afterwards and I did that as well -- this might've help in other ways but it did help clean out all the clutters I had.  
+
+Afterwards I reastarted the service and also started building it from start again and it after those fixes it worked -- till we encountered an issue durning our demo which I've mentioned up top --> [Not Working Section](#what-is-not-working-in-this-project). 
